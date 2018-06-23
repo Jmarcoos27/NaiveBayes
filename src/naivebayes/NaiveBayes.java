@@ -161,7 +161,7 @@ public class NaiveBayes {
         for (j = 0; j < getnLinhas(); j++) {
             if (dataset[j][getnColunas() - 1].equals("SIM")) {
                 qntSim++;
-            } else if (dataset[j][getnColunas() - 1].equals("NO")) {
+            } else if (dataset[j][getnColunas() - 1].equals("NAO")) {
                 qntNao++;
             }
         }
@@ -194,7 +194,7 @@ public class NaiveBayes {
                     if ((dataset[j][auxiliar].equals(aux.get(i))) && dataset[j][getnColunas()-1].equals("SIM")) {
                         contSimAtt++;
                     }
-                    else if (((dataset[j][auxiliar].equals(aux.get(i))) && dataset[j][getnColunas()-1].equals("NO"))){
+                    else if (((dataset[j][auxiliar].equals(aux.get(i))) && dataset[j][getnColunas()-1].equals("NAO"))){
                         contNaoAtt++;
                     }
                 }
@@ -203,8 +203,6 @@ public class NaiveBayes {
                     dic.put(aux.get(i)+" SIM", probabSim);
                     dic.put(aux.get(i)+" NAO", probabNao);
             }
-            if(aux.isEmpty())
-                break;
             auxiliar++;
         }
         return dic;
