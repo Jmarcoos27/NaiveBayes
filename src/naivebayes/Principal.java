@@ -5,8 +5,6 @@
  */
 package naivebayes;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
@@ -87,13 +85,13 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        painelClasses.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        painelClasses.setBorder(javax.swing.BorderFactory.createTitledBorder("Classes"));
 
         javax.swing.GroupLayout painelClassesLayout = new javax.swing.GroupLayout(painelClasses);
         painelClasses.setLayout(painelClassesLayout);
         painelClassesLayout.setHorizontalGroup(
             painelClassesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 654, Short.MAX_VALUE)
+            .addGap(0, 646, Short.MAX_VALUE)
         );
         painelClassesLayout.setVerticalGroup(
             painelClassesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,7 +136,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(painelAtributos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(painelClasses, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addComponent(btnTeste)
                 .addContainerGap())
         );
@@ -151,10 +149,13 @@ public class Principal extends javax.swing.JFrame {
         int j;
         int auxiliar = 0;
         int auxRB = 0;
-        int x = 0;
-        int y = 5;
+        int x = 10;
+        int y = 25;
         String temp = "";
         ArrayList<String> aux = new ArrayList<>();
+        nb = new NaiveBayes();
+        painelClasses.removeAll();
+        painelAtributos.removeAll();
         //Pesquisa o Arquivo CSV
         JFileChooser arquivo = new JFileChooser();
         FileNameExtensionFilter filtroPDF = new FileNameExtensionFilter("Arquivos CSV", "csv");
@@ -189,9 +190,6 @@ public class Principal extends javax.swing.JFrame {
                     cb.setBounds(x, y, 170, 30);
                     cb.addItem("Selecione uma classe");
                     cb.setSelectedItem(cb.getItemAt(0));
-                    for (String att : aux) {
-                        cb.addItem(att);   
-                    }
                     cb.addItemListener(new ItemListener(){
                             @Override
                             public void itemStateChanged(ItemEvent ie) {
@@ -201,9 +199,11 @@ public class Principal extends javax.swing.JFrame {
                                 }
                             }
                         });
+                    for (String att : aux) {
+                        cb.addItem(att);   
+                    }
                     painelClasses.add(cb);
                     auxiliar++;
-                    x = 0;
                     y += 75;
                     this.repaint();
                     
@@ -215,14 +215,14 @@ public class Principal extends javax.swing.JFrame {
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         int i = 0;
         double prob = 1;
-        String jogar = attSelecionados.get(attSelecionados.size()-1);
+        String acao = attSelecionados.get(attSelecionados.size()-1);
         for(i = 0; i<attSelecionados.size()-1;i++){
-            prob *= probabilidades.get(attSelecionados.get(i)+" "+jogar);
+            prob *= probabilidades.get(attSelecionados.get(i)+" "+acao);
         }
-        if(jogar.equals("SIM")){
+        if(acao.equals("SIM")|| acao.equals("YES")){
             prob *= nb.getProbabPositiva();
         }
-        else if(jogar.equals("NAO")){
+        else if(acao.equals("NAO") || acao.equals("NO")){
             prob *= nb.getProbabNegativa();
         }
         JOptionPane.showMessageDialog(this,"Probabilidade de evento: " +new DecimalFormat("#0.####").format(prob));

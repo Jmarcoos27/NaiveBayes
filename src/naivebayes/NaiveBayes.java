@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class NaiveBayes {
 
@@ -14,6 +13,36 @@ public class NaiveBayes {
     private int nColunas;
     private double probabPositiva;
     private double probabNegativa;
+    private String classePositiva;
+    private String classeNegativa;
+
+    /**
+     * @return the classePositiva
+     */
+    public String getClassePositiva() {
+        return classePositiva;
+    }
+
+    /**
+     * @param classePositiva the classePositiva to set
+     */
+    public void setClassePositiva(String classePositiva) {
+        this.classePositiva = classePositiva;
+    }
+
+    /**
+     * @return the classeNegativa
+     */
+    public String getClasseNegativa() {
+        return classeNegativa;
+    }
+
+    /**
+     * @param classeNegativa the classeNegativa to set
+     */
+    public void setClasseNegativa(String classeNegativa) {
+        this.classeNegativa = classeNegativa;
+    }
 
     /**
      * @return the nLinhas
@@ -73,17 +102,8 @@ public class NaiveBayes {
 
     /**
      * @param args the command line arguments
-     
-    public static void main(String[] args) {
-        NaiveBayes nb = new NaiveBayes();
-        String[][] dataset = nb.run();
-        HashMap<String,Double> probabilidades = new HashMap<String,Double>();
-        probabilidades = nb.treinamento(dataset);
-        nb.teste(probabilidades);
-    }
-    * */ 
-    
-    
+    *
+     */
     public String[][] preencherMatriz(String caminhoArquivo) {
 
         String arquivoCSV = caminhoArquivo;
@@ -92,11 +112,6 @@ public class NaiveBayes {
         String csvDivisor = ";";
         String[][] dataset = null;
         ArrayList<String> dados = new ArrayList<>();
-        ArrayList<String> tempo = new ArrayList<>();
-        ArrayList<String> temperatura = new ArrayList<>();
-        ArrayList<String> umidade = new ArrayList<>();
-        ArrayList<String> vento = new ArrayList<>();
-        ArrayList<String> jogar = new ArrayList<>();
         String[] obj = null;
         try {
             int i = 0;
@@ -121,13 +136,6 @@ public class NaiveBayes {
                 }
                 i++;
             }
-            for (j = 0; j < dataset.length; j++) {
-                tempo.add(dataset[j][0]);
-                temperatura.add(dataset[j][1]);
-                umidade.add(dataset[j][2]);
-                vento.add(dataset[j][3]);
-                jogar.add(dataset[j][4]);
-            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -141,11 +149,11 @@ public class NaiveBayes {
                 }
             }
         }
-        
+
         return dataset;
     }
 
-    public HashMap<String,Double> treinamento(String[][] dataset) {
+    public HashMap<String, Double> treinamento(String[][] dataset) {
         double qntSim = 0;
         double qntNao = 0;
         int i = 0;
@@ -159,17 +167,40 @@ public class NaiveBayes {
         HashMap<String, Double> dic = new HashMap<>();
         //definindo quantidades de sim e não;
         for (j = 0; j < getnLinhas(); j++) {
-            if (dataset[j][getnColunas() - 1].equals("SIM")) {
+            if (dataset[j][getnColunas() - 1].equals("SIM") || dataset[j][getnColunas() - 1].equals("YES")) {
                 qntSim++;
-            } else if (dataset[j][getnColunas() - 1].equals("NAO")) {
+            } else if (dataset[j][getnColunas() - 1].equals("NAO") || dataset[j][getnColunas() - 1].equals("NO")) {
                 qntNao++;
             }
         }
         setProbabPositiva(qntSim / (getnLinhas() - 1));
         setProbabNegativa(qntNao / (getnLinhas() - 1));
 
+        //Setando Classe da ação
+        for (i = 1; i < getnLinhas() - 1; i++) {
+            temp = dataset[i][getnColunas() - 1];
+            if (aux.isEmpty()) {
+                aux.add(temp);
+            }
+            for (j =0; j < aux.size(); j++) {
+                if (aux.contains(temp)) {
+                    continue;
+                } else {
+                    aux.add(temp);
+                }
+            }
+        }
+        if(aux.contains("SIM"))
+            setClassePositiva("SIM");
+        else if(aux.contains("YES"))
+            setClassePositiva("YES");
+        if(aux.contains("NAO"))
+            setClasseNegativa("NAO");
+        else if(aux.contains("NO"))
+            setClasseNegativa("NO");
+
         //Verificando a probabilidade das Classes dos Atributos
-        while (auxiliar < getnColunas()-1) {
+        while (auxiliar < getnColunas() - 1) {
             aux.clear();
             for (j = 1; j < getnLinhas() - 1; j++) {
                 temp = dataset[j][auxiliar];
@@ -191,17 +222,16 @@ public class NaiveBayes {
                 contNaoAtt = 0;
                 for (j = 0; j < getnLinhas(); j++) {
                     //verificando a probabilidade da classe do atributo ser sim, ou não
-                    if ((dataset[j][auxiliar].equals(aux.get(i))) && dataset[j][getnColunas()-1].equals("SIM")) {
+                    if ((dataset[j][auxiliar].equals(aux.get(i))) && (dataset[j][getnColunas() - 1].equals("SIM") || dataset[j][getnColunas() - 1].equals("YES"))) {
                         contSimAtt++;
-                    }
-                    else if (((dataset[j][auxiliar].equals(aux.get(i))) && dataset[j][getnColunas()-1].equals("NAO"))){
+                    } else if (((dataset[j][auxiliar].equals(aux.get(i))) && (dataset[j][getnColunas() - 1].equals("NAO") || dataset[j][getnColunas() - 1].equals("NO")))) {
                         contNaoAtt++;
                     }
                 }
-                    probabSim = contSimAtt/qntSim;
-                    probabNao = contNaoAtt/qntNao;
-                    dic.put(aux.get(i)+" SIM", probabSim);
-                    dic.put(aux.get(i)+" NAO", probabNao);
+                probabSim = contSimAtt / qntSim;
+                probabNao = contNaoAtt / qntNao;
+                dic.put(aux.get(i) + " " + getClassePositiva(), probabSim);
+                dic.put(aux.get(i) + " " + getClasseNegativa(), probabNao);
             }
             auxiliar++;
         }
