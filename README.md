@@ -1,5 +1,5 @@
 # NaiveBayes
 
-Trabalho Para disciplica de Mineração de dados
+Trabalho Para disciplina de Mineração de dados.
 
-Construir um classificador Naive Bayes sem auxilio de nenhuma bibllioteca ou método externo.
+Construir um classificador Naive Bayes sem auxílio de nenhuma biblioteca ou método externo.
