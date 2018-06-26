@@ -145,6 +145,8 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        //Definicao de variaveis 
         int i = 0;
         int j;
         int auxiliar = 0;
@@ -162,50 +164,53 @@ public class Principal extends javax.swing.JFrame {
         arquivo.addChoosableFileFilter(filtroPDF);
         arquivo.setAcceptAllFileFilterUsed(false);
         if (arquivo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            txtArquivo.setText(arquivo.getSelectedFile().getAbsolutePath());
-            String[][] dataset = nb.preencherMatriz(txtArquivo.getText());
+            txtArquivo.setText(arquivo.getSelectedFile().getAbsolutePath());//seta o caminho do arquivo no jText
+            String[][] dataset = nb.preencherMatriz(txtArquivo.getText());//preenche a matriz dataset com os valores da tabela de treinamento
+           // o método treinamento usa a matriz dataset para fazer a contagem das probabilidades
             probabilidades = nb.treinamento(dataset);
-            for (i = 0; i < nb.getnColunas(); i++) {
-                JLabel lbl = new JLabel(dataset[0][i]);
+            for (i = 0; i < nb.getnColunas(); i++) {//for para pegar os atributos e criar labels
+                JLabel lbl = new JLabel(dataset[0][i]);//busca valores da linha 0 = linha dos atributos
                 lbl.setBounds(10, i * 70, 100, 50);
-                painelAtributos.add(lbl);
+                painelAtributos.add(lbl);// adiciona lbl criado no Jpanel Atributos do frame
                 this.repaint();
             }
-             while (auxiliar < nb.getnColunas()-1) {
-                    aux.clear();
+            //o proximo while é utilizado para determinar as classes distintas de cada atributo
+             while (auxiliar < nb.getnColunas()-1) { // utiliza o auxilar para percorrer o numero de colunas
+                    aux.clear(); // limpa a lista aux
                     for (j = 1; j < nb.getnLinhas()-1; j++) {
-                        temp = dataset[j][auxiliar];
-                        if (aux.isEmpty()) {
-                            aux.add(temp);
-                        }
+                        temp = dataset[j][auxiliar]; //seta temp como o primeira classe do atributo
+                        if (aux.isEmpty()) {// se vazia
+                            aux.add(temp);// insere temp na lista
+                        }//se não, verifica se temp existe na lista
                         for (i = 0; i < aux.size(); i++) {
-                            if (aux.contains(temp)) {
+                            if (aux.contains(temp)) {// se existir, pula a iteração do for
                                 continue;
-                            } else {
+                            } else {// se não, insere temp na lista aux
                                 aux.add(temp);
                             }
                         }
                     }
+                    //configurações iniciais dos comboboxes de classe
                     JComboBox cb = new JComboBox();
                     cb.setBounds(x, y, 170, 30);
-                    cb.addItem("Selecione uma classe");
+                    cb.addItem("Selecione uma classe");//item Padrão
                     cb.setSelectedItem(cb.getItemAt(0));
-                    cb.addItemListener(new ItemListener(){
+                    cb.addItemListener(new ItemListener(){ //usa evendo ItemListener para "Ouvir" a mudança de item
                             @Override
                             public void itemStateChanged(ItemEvent ie) {
-                                if(ie.getStateChange() == ItemEvent.SELECTED){
+                                if(ie.getStateChange() == ItemEvent.SELECTED){// caso haja mudança de item no combobox
                                     Object item = ie.getItem();
-                                    attSelecionados.add((String)item);
+                                    attSelecionados.add((String)item);// insere valor do combobox na lista attSelecionados
                                 }
                             }
                         });
-                    for (String att : aux) {
-                        cb.addItem(att);   
+                    for (String att : aux) {// para cada classe na lista aux(Classes distintas do atributo)
+                        cb.addItem(att); // insere item no combobox
                     }
-                    painelClasses.add(cb);
-                    auxiliar++;
-                    y += 75;
-                    this.repaint();
+                    painelClasses.add(cb);// adciona combobox no JPanel de classes
+                    auxiliar++;// incrementa auxiliar para pular pra proxima coluna;
+                    y += 75;// aumenta o valor de y para melhorar o espaçamento dos comboboxes
+                    this.repaint();// remonta o form para mostrar os comboboxes
                     
                 }
              
@@ -214,19 +219,22 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         int i = 0;
+        //variaveis para multiplicacao da probabilidade dos eventos
         double probP = 1;
         double probN = 1;
-        for(i = 0; i<attSelecionados.size()-1;i++){
+        for(i = 0; i<attSelecionados.size();i++){
+            //busca no probabilidades o value cuja key seja igual a classe+Sim/yes = "SOL SIM"
             probP *= probabilidades.get(attSelecionados.get(i)+" "+nb.getClassePositiva());
         }
-        for(i = 0; i<attSelecionados.size()-1;i++){
+        for(i = 0; i<attSelecionados.size();i++){
+            //busca no probabilidades o value cuja key seja igual a classe+Nao/no = "SOL NAO"
             probN *= probabilidades.get(attSelecionados.get(i)+" "+nb.getClasseNegativa());
         }
-        probP *= nb.getProbabPositiva();
-        probN *= nb.getProbabNegativa();
+        probP *= nb.getProbabPositiva();// multiplica valor da probabilidade das classes ao valor da Probabilidade positiva geral
+        probN *= nb.getProbabNegativa();//multiplica valor da probabilidade das classes ao valor da Probabilidade negativa geral
         JOptionPane.showMessageDialog(this,"Probabilidade Positiva de evento: " +new DecimalFormat("#0.####").format(probP)+"\n"+
                                         "Probabilidade Negativa de evento: " +new DecimalFormat("#0.####").format(probN));
-        attSelecionados.clear();
+        attSelecionados.clear();// limpa os valores na lista das classes selecionadas
     }//GEN-LAST:event_btnTesteActionPerformed
 
     /**
