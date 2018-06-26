@@ -105,7 +105,7 @@ public class NaiveBayes {
     *
      */
     public String[][] preencherMatriz(String caminhoArquivo) {
-
+            
         String arquivoCSV = caminhoArquivo;
         BufferedReader br = null;
         String linha = "";
@@ -132,7 +132,7 @@ public class NaiveBayes {
             while ((linha = br.readLine()) != null) {
                 obj = linha.split(csvDivisor);//quebra a linha onde existe ;
                 for (j = 0; j < obj.length; j++) {
-                    dataset[i][j] = obj[j];
+                    dataset[i][j] = obj[j];//insere os valores de obj na matriz 
                 }
                 i++;
             }
@@ -173,7 +173,7 @@ public class NaiveBayes {
                 qntNao++;
             }
         }
-        setProbabPositiva(qntSim / (getnLinhas() - 1));
+        setProbabPositiva(qntSim / (getnLinhas() - 1)); 
         setProbabNegativa(qntNao / (getnLinhas() - 1));
 
         //Setando Classe da ação
@@ -230,8 +230,8 @@ public class NaiveBayes {
                 }
                 probabSim = contSimAtt / qntSim;
                 probabNao = contNaoAtt / qntNao;
-                dic.put(aux.get(i) + " " + getClassePositiva(), probabSim);
-                dic.put(aux.get(i) + " " + getClasseNegativa(), probabNao);
+                dic.put(aux.get(i) + " " + getClassePositiva(), probabSim);// insere no HM a classe junto a classe positiva, e o valor da probabilidade
+                dic.put(aux.get(i) + " " + getClasseNegativa(), probabNao);// insere no HM a classe junto a classe negativa, e o valor da probabilidade
             }
             auxiliar++;
         }
