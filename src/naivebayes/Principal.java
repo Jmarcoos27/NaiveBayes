@@ -171,7 +171,7 @@ public class Principal extends javax.swing.JFrame {
                 painelAtributos.add(lbl);
                 this.repaint();
             }
-             while (auxiliar < nb.getnColunas()) {
+             while (auxiliar < nb.getnColunas()-1) {
                     aux.clear();
                     for (j = 1; j < nb.getnLinhas()-1; j++) {
                         temp = dataset[j][auxiliar];
@@ -214,18 +214,18 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnTesteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTesteActionPerformed
         int i = 0;
-        double prob = 1;
-        String acao = attSelecionados.get(attSelecionados.size()-1);
+        double probP = 1;
+        double probN = 1;
         for(i = 0; i<attSelecionados.size()-1;i++){
-            prob *= probabilidades.get(attSelecionados.get(i)+" "+acao);
+            probP *= probabilidades.get(attSelecionados.get(i)+" "+nb.getClassePositiva());
         }
-        if(acao.equals("SIM")|| acao.equals("YES")){
-            prob *= nb.getProbabPositiva();
+        for(i = 0; i<attSelecionados.size()-1;i++){
+            probN *= probabilidades.get(attSelecionados.get(i)+" "+nb.getClasseNegativa());
         }
-        else if(acao.equals("NAO") || acao.equals("NO")){
-            prob *= nb.getProbabNegativa();
-        }
-        JOptionPane.showMessageDialog(this,"Probabilidade de evento: " +new DecimalFormat("#0.####").format(prob));
+        probP *= nb.getProbabPositiva();
+        probN *= nb.getProbabNegativa();
+        JOptionPane.showMessageDialog(this,"Probabilidade Positiva de evento: " +new DecimalFormat("#0.####").format(probP)+"\n"+
+                                        "Probabilidade Negativa de evento: " +new DecimalFormat("#0.####").format(probN));
         attSelecionados.clear();
     }//GEN-LAST:event_btnTesteActionPerformed
 
